@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:live_text/recip_model.dart';
+import 'package:live_text/recips.dart';
 
 class RecipeListPage extends StatefulWidget {
   const RecipeListPage({super.key});
@@ -20,25 +20,22 @@ class _RecipeListPageState extends State<RecipeListPage> {
     _loadRecipes();
   }
 
-  Future<void> _loadRecipes() async {
-    try {
-      final String response = await rootBundle.loadString(
-        'assets/recipes.json',
-      );
-      final Map<String, dynamic> data = json.decode(response);
-      final List<dynamic> recipeList = data['recipes'];
-      setState(() {
-        recipes = recipeList.map((json) => Recipe.fromJson(json)).toList();
-      });
-    } catch (e) {
-      print("Error loading JSON: $e");
-    }
+  void _loadRecipes() {
+    final Map<String, dynamic> data = json.decode(jsonData);
+    final List<dynamic> recipeList = data['recipes'];
+
+    setState(() {
+      recipes = recipeList.map((json) => Recipe.fromJson(json)).toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Food Recipes")),
+      appBar: AppBar(
+        backgroundColor: Colors.blue,
+        title: const Text("Food Recipes"),
+      ),
       body: recipes.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
@@ -48,17 +45,6 @@ class _RecipeListPageState extends State<RecipeListPage> {
                   leading: const Icon(Icons.restaurant_menu),
                   title: Text(recipes[index].title),
                   subtitle: Text(recipes[index].description),
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text(recipes[index].title),
-                        content: Text(
-                          "Ingredients:\n${recipes[index].ingredients.join(", ")}",
-                        ),
-                      ),
-                    );
-                  },
                 );
               },
             ),
