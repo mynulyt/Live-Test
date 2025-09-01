@@ -43,7 +43,10 @@ class _RecipeListPageState extends State<RecipeListPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   leading: const Icon(Icons.restaurant_menu),
-                  title: Text(recipes[index].title),
+                  title: Text(
+                    recipes[index].title,
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
                   subtitle: Text(recipes[index].description),
                 );
               },
